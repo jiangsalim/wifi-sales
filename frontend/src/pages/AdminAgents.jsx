@@ -73,7 +73,7 @@ export default function AdminAgents() {
       {/* Top Bar */}
       <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
         <div className="px-4 py-3 flex items-center justify-between">
-          <h1 className="text-lg font-bold">WiFi Sales</h1>
+          <h1 className="text-lg font-bold">BEN WIFISPOT</h1>
           <div className="flex items-center gap-2">
             <button onClick={toggleLanguage} className="text-xs bg-blue-800 hover:bg-blue-900 px-2 py-1 rounded">
               {language === 'en' ? '🇺🇬 LG' : '🇬🇧 EN'}
@@ -98,7 +98,7 @@ export default function AdminAgents() {
             <h2 className="text-xl font-bold text-gray-800">Agents</h2>
             <button onClick={() => { setEditingAgent(null); setForm({ name: '', email: '', password: '', location: '', daily_target: 0, commission_rate: 0, language: 'en' }); setShowForm(true); }}
               className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800">
-              New Agent
+              + New Agent
             </button>
           </div>
 
@@ -107,10 +107,10 @@ export default function AdminAgents() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Full Name</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Email</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Location</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Commission</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Commission %</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">Actions</th>
                 </tr>
@@ -150,24 +150,50 @@ export default function AdminAgents() {
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="font-bold text-lg mb-4">{editingAgent ? 'Edit Agent' : 'New Agent'}</h3>
+            <h3 className="font-bold text-lg mb-4">{editingAgent ? 'Edit Agent' : 'Create New Agent'}</h3>
             {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input type="text" placeholder="Name" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required />
-              <input type="email" placeholder="Email" value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required />
-              <input type="password" placeholder={editingAgent ? 'New password (leave blank to keep)' : 'Password'} value={form.password} onChange={e => setForm({...form, password: e.target.value})}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required={!editingAgent} />
-              <input type="text" placeholder="Location (e.g., Jinja)" value={form.location} onChange={e => setForm({...form, location: e.target.value})}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-              <input type="number" placeholder="Daily Target (UGX)" value={form.daily_target} onChange={e => setForm({...form, daily_target: e.target.value})}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-              <input type="number" placeholder="Commission Rate (%)" value={form.commission_rate} onChange={e => setForm({...form, commission_rate: e.target.value})}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Full Name</label>
+                <input type="text" placeholder="Agent's full name" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Email Address</label>
+                <input type="email" placeholder="Agent's login email" value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">{editingAgent ? 'New Password (leave blank to keep current)' : 'Password'}</label>
+                <input type="password" placeholder="Min 6 characters" value={form.password} onChange={e => setForm({...form, password: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required={!editingAgent} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Assigned Location</label>
+                <input type="text" placeholder="e.g., Jinja, Kampala, Mbale" value={form.location} onChange={e => setForm({...form, location: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Daily Sales Target (UGX)</label>
+                <input type="number" placeholder="e.g., 500000" value={form.daily_target} onChange={e => setForm({...form, daily_target: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Commission Percentage (%)</label>
+                <input type="number" placeholder="e.g., 10 for 10%" value={form.commission_rate} onChange={e => setForm({...form, commission_rate: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Language</label>
+                <select value={form.language} onChange={e => setForm({...form, language: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                  <option value="en">English</option>
+                  <option value="lg">Luganda</option>
+                </select>
+              </div>
               <div className="flex gap-3">
                 <button type="submit" className="flex-1 bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-800">
-                  {editingAgent ? 'Update' : 'Create'}
+                  {editingAgent ? 'Update Agent' : 'Create Agent'}
                 </button>
                 <button type="button" onClick={() => setShowForm(false)} className="flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-300">
                   Cancel
