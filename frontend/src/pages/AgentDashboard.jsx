@@ -8,6 +8,7 @@ import OfflineBanner from '../components/OfflineBanner';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import Footer from '../components/Footer';
 
 export default function AgentDashboard() {
   const { t } = useLanguage();
@@ -119,6 +120,7 @@ export default function AgentDashboard() {
       </main>
 
       <BottomNav />
+      <Footer />
       <InstallPrompt />
 
       {showSubmit && (

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../services/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import Footer from '../components/Footer';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -168,6 +169,8 @@ export default function AdminDashboard() {
           </div>
         </main>
       </div>
+
+      <Footer />
     </div>
   );
 }
