@@ -3,6 +3,8 @@ import Navbar from '../components/Navbar';
 import BottomNav from '../components/BottomNav';
 import ShiftCard from '../components/ShiftCard';
 import SubmitModal from '../components/SubmitModal';
+import InstallPrompt from '../components/InstallPrompt';
+import OfflineBanner from '../components/OfflineBanner';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -69,6 +71,7 @@ export default function AgentDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+      <OfflineBanner />
 
       <main className="p-4 pb-20">
         <div className="mb-4">
@@ -116,6 +119,7 @@ export default function AgentDashboard() {
       </main>
 
       <BottomNav />
+      <InstallPrompt />
 
       {showSubmit && (
         <SubmitModal
