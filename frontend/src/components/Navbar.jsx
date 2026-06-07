@@ -1,0 +1,33 @@
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+
+export default function Navbar() {
+  const { user, logout } = useAuth();
+  const { t, language, toggleLanguage } = useLanguage();
+
+  return (
+    <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
+      <div className="px-4 py-3 flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-bold">WiFi Sales</h1>
+          <p className="text-xs text-blue-200">{user?.location || 'Agent'}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm hidden sm:block">{user?.name}</span>
+          <button
+            onClick={toggleLanguage}
+            className="text-xs bg-blue-800 hover:bg-blue-900 px-2 py-1 rounded"
+          >
+            {language === 'en' ? '🇺🇬 LG' : '🇬🇧 EN'}
+          </button>
+          <button
+            onClick={logout}
+            className="text-sm bg-blue-800 hover:bg-blue-900 px-3 py-1 rounded"
+          >
+            {t('sign_out')}
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+}

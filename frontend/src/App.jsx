@@ -3,8 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import Login from './pages/Login';
+import AgentDashboard from './pages/AgentDashboard';
 
-function AgentDashboard() { return <div>Agent Dashboard - Coming in Phase 9</div>; }
 function AgentHistory() { return <div>Agent History - Coming in Phase 10</div>; }
 function AdminDashboard() { return <div>Admin Dashboard - Coming in Phase 11</div>; }
 function AdminAgents() { return <div>Admin Agents - Coming in Phase 12</div>; }
