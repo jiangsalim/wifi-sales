@@ -11,6 +11,7 @@ import AdminEntries from './pages/AdminEntries';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/agents" element={<ProtectedRoute role="admin"><AdminAgents /></ProtectedRoute>} />
             <Route path="/admin/entries" element={<ProtectedRoute role="admin"><AdminEntries /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute role="agent"><Profile /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </LanguageProvider>
