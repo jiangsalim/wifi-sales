@@ -28,7 +28,7 @@ function App() {
             <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/agents" element={<ProtectedRoute role="admin"><AdminAgents /></ProtectedRoute>} />
             <Route path="/admin/entries" element={<ProtectedRoute role="admin"><AdminEntries /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute role="agent"><Profile /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </LanguageProvider>
