@@ -14,7 +14,9 @@ const SalesEntry = {
       ]
     );
     saveDatabase();
-    const result = db.exec('SELECT * FROM sales_entries WHERE id = last_insert_rowid()');
+
+    const result = db.exec('SELECT * FROM sales_entries ORDER BY id DESC LIMIT 1');
+    if (result.length === 0 || result[0].values.length === 0) return null;
     const cols = result[0].columns;
     const vals = result[0].values[0];
     const entry = {};
@@ -52,12 +54,9 @@ const SalesEntry = {
 
     query += ' ORDER BY entry_date DESC, shift_id DESC';
 
-    // Count total
-    const countQuery = query.replace('SELECT *', 'SELECT COUNT(*) as count');
-    const countResult = db.exec(countQuery, params);
-    const total = countResult[0].values[0][0];
+    const countResult = db.exec(query.replace('SELECT *', 'SELECT COUNT(*) as count'), params);
+    const total = countResult.length > 0 ? countResult[0].values[0][0] : 0;
 
-    // Paginate
     const offset = (page - 1) * perPage;
     query += ` LIMIT ${perPage} OFFSET ${offset}`;
     const result = db.exec(query, params);
@@ -65,7 +64,9 @@ const SalesEntry = {
     const entries = result.length > 0 ? result[0].values.map(vals => {
       const entry = {};
       result[0].columns.forEach((col, i) => entry[col] = vals[i]);
-      if (entry.missed_shift_ids) entry.missed_shift_ids = JSON.parse(entry.missed_shift_ids);
+      if (entry.missed_shift_ids) {
+        try { entry.missed_shift_ids = JSON.parse(entry.missed_shift_ids); } catch(e) {}
+      }
       return entry;
     }) : [];
 
@@ -74,7 +75,11 @@ const SalesEntry = {
 
   getAll: (filters = {}) => {
     const db = getDb();
-    let query = 'SELECT se.*, u.name as agent_name, u.location as agent_location, s.name as shift_name FROM sales_entries se JOIN users u ON se.agent_id = u.id JOIN shifts s ON se.shift_id = s.id WHERE 1=1';
+    let query = `SELECT se.*, u.name as agent_name, u.location as agent_location, s.name as shift_name 
+                 FROM sales_entries se 
+                 JOIN users u ON se.agent_id = u.id 
+                 JOIN shifts s ON se.shift_id = s.id 
+                 WHERE 1=1`;
     const params = [];
 
     if (filters.dateFrom) { query += ' AND se.entry_date >= ?'; params.push(filters.dateFrom); }
@@ -90,7 +95,9 @@ const SalesEntry = {
     return result[0].values.map(vals => {
       const entry = {};
       result[0].columns.forEach((col, i) => entry[col] = vals[i]);
-      if (entry.missed_shift_ids) entry.missed_shift_ids = JSON.parse(entry.missed_shift_ids);
+      if (entry.missed_shift_ids) {
+        try { entry.missed_shift_ids = JSON.parse(entry.missed_shift_ids); } catch(e) {}
+      }
       return entry;
     });
   },
@@ -122,8 +129,13 @@ const SalesEntry = {
   getAgentComparison: (monthYear) => {
     const db = getDb();
     const result = db.exec(
-      'SELECT u.id, u.name, u.location, COALESCE(SUM(se.total_sales), 0) as total_gross FROM users u LEFT JOIN sales_entries se ON u.id = se.agent_id AND se.month_year = ? WHERE u.role = ? GROUP BY u.id ORDER BY total_gross DESC',
-      [monthYear, 'agent']
+      `SELECT u.id, u.name, u.location, COALESCE(SUM(se.total_sales), 0) as total_gross 
+       FROM users u 
+       LEFT JOIN sales_entries se ON u.id = se.agent_id AND se.month_year = ? 
+       WHERE u.role = 'agent' 
+       GROUP BY u.id 
+       ORDER BY total_gross DESC`,
+      [monthYear]
     );
     if (result.length === 0) return [];
     return result[0].values.map(vals => ({
@@ -137,8 +149,9 @@ const SalesEntry = {
   getWeeklyStats: () => {
     const db = getDb();
     const now = new Date();
+    const dayOfWeek = now.getDay();
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setDate(now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
 
