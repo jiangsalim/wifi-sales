@@ -6,9 +6,8 @@ import Login from './pages/Login';
 import AgentDashboard from './pages/AgentDashboard';
 import AgentHistory from './pages/AgentHistory';
 import AdminDashboard from './pages/AdminDashboard';
-
-function AdminAgents() { return <div>Admin Agents - Coming in Phase 12</div>; }
-function AdminEntries() { return <div>Admin Entries - Coming in Phase 12</div>; }
+import AdminAgents from './pages/AdminAgents';
+import AdminEntries from './pages/AdminEntries';
 
 function App() {
   return (

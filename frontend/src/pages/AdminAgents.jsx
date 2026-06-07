@@ -1,0 +1,191 @@
+import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import api from '../services/api';
+
+export default function AdminAgents() {
+  const { user, logout } = useAuth();
+  const { language, toggleLanguage } = useLanguage();
+  const [agents, setAgents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingAgent, setEditingAgent] = useState(null);
+  const [form, setForm] = useState({ name: '', email: '', password: '', location: '', daily_target: 0, commission_rate: 0, language: 'en' });
+  const [error, setError] = useState('');
+
+  const fetchAgents = async () => {
+    try {
+      const data = await api.get('/admin/agents');
+      setAgents(data.data.agents);
+    } catch (err) {
+      console.error('Failed to fetch agents');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchAgents(); }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      if (editingAgent) {
+        await api.put(`/admin/agents/${editingAgent.id}`, form);
+      } else {
+        await api.post('/admin/agents', form);
+      }
+      setShowForm(false);
+      setEditingAgent(null);
+      setForm({ name: '', email: '', password: '', location: '', daily_target: 0, commission_rate: 0, language: 'en' });
+      fetchAgents();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to save agent');
+    }
+  };
+
+  const handleEdit = (agent) => {
+    setEditingAgent(agent);
+    setForm({ name: agent.name, email: agent.email, password: '', location: agent.location || '', daily_target: agent.daily_target, commission_rate: agent.commission_rate, language: agent.language });
+    setShowForm(true);
+  };
+
+  const handleToggleActive = async (agent) => {
+    try {
+      await api.put(`/admin/agents/${agent.id}/toggle-active`);
+      fetchAgents();
+    } catch (err) {
+      console.error('Failed to toggle agent');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Bar */}
+      <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
+        <div className="px-4 py-3 flex items-center justify-between">
+          <h1 className="text-lg font-bold">WiFi Sales</h1>
+          <div className="flex items-center gap-2">
+            <button onClick={toggleLanguage} className="text-xs bg-blue-800 hover:bg-blue-900 px-2 py-1 rounded">
+              {language === 'en' ? '🇺🇬 LG' : '🇬🇧 EN'}
+            </button>
+            <button onClick={logout} className="text-sm bg-blue-800 hover:bg-blue-900 px-3 py-1 rounded">Sign Out</button>
+          </div>
+        </div>
+      </nav>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="hidden md:block w-64 bg-white border-r min-h-[calc(100vh-57px)] p-4">
+          <nav className="space-y-1">
+            <NavLink to="/admin" end className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Dashboard</NavLink>
+            <NavLink to="/admin/agents" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Agents</NavLink>
+            <NavLink to="/admin/entries" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Sales Entries</NavLink>
+          </nav>
+        </div>
+
+        <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-gray-800">Agents</h2>
+            <button onClick={() => { setEditingAgent(null); setForm({ name: '', email: '', password: '', location: '', daily_target: 0, commission_rate: 0, language: 'en' }); setShowForm(true); }}
+              className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800">
+              New Agent
+            </button>
+          </div>
+
+          {/* Agents Table */}
+          <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Email</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Location</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Commission</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {agents.map(agent => (
+                  <tr key={agent.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3">{agent.name}</td>
+                    <td className="px-4 py-3 text-gray-500">{agent.email}</td>
+                    <td className="px-4 py-3 hidden md:table-cell">{agent.location || '-'}</td>
+                    <td className="px-4 py-3 hidden md:table-cell">{agent.commission_rate}%</td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${agent.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {agent.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        <button onClick={() => handleEdit(agent)} className="text-blue-600 hover:text-blue-800 text-xs">Edit</button>
+                        <button onClick={() => handleToggleActive(agent)} className={`text-xs ${agent.is_active ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'}`}>
+                          {agent.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {agents.length === 0 && (
+                  <tr><td colSpan="6" className="text-center py-8 text-gray-500">No agents found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+
+      {/* Create/Edit Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+            <h3 className="font-bold text-lg mb-4">{editingAgent ? 'Edit Agent' : 'New Agent'}</h3>
+            {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <input type="text" placeholder="Name" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required />
+              <input type="email" placeholder="Email" value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required />
+              <input type="password" placeholder={editingAgent ? 'New password (leave blank to keep)' : 'Password'} value={form.password} onChange={e => setForm({...form, password: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required={!editingAgent} />
+              <input type="text" placeholder="Location (e.g., Jinja)" value={form.location} onChange={e => setForm({...form, location: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <input type="number" placeholder="Daily Target (UGX)" value={form.daily_target} onChange={e => setForm({...form, daily_target: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <input type="number" placeholder="Commission Rate (%)" value={form.commission_rate} onChange={e => setForm({...form, commission_rate: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <div className="flex gap-3">
+                <button type="submit" className="flex-1 bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-800">
+                  {editingAgent ? 'Update' : 'Create'}
+                </button>
+                <button type="button" onClick={() => setShowForm(false)} className="flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-300">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Nav */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40">
+        <div className="flex justify-around">
+          <NavLink to="/admin" end className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Dashboard</NavLink>
+          <NavLink to="/admin/agents" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Agents</NavLink>
+          <NavLink to="/admin/entries" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Entries</NavLink>
+        </div>
+      </div>
+    </div>
+  );
+}
