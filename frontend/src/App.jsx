@@ -2,9 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import Login from './pages/Login';
 
-// Pages will be built in coming phases - using placeholders for now
-function Login() { return <div>Login Page - Coming in Phase 8</div>; }
 function AgentDashboard() { return <div>Agent Dashboard - Coming in Phase 9</div>; }
 function AgentHistory() { return <div>Agent History - Coming in Phase 10</div>; }
 function AdminDashboard() { return <div>Admin Dashboard - Coming in Phase 11</div>; }
