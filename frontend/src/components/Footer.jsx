@@ -13,7 +13,15 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} BEN WIFISPOT. All rights reserved.
         </p>
         <p className="text-center text-xs text-gray-400 mt-1">
-          Built by jiangsalim
+          Built by{' '}
+          <a
+            href="https://herman-software-website.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            Herman Software
+          </a>
         </p>
       </div>
     </footer>
