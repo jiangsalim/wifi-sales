@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const SalesEntry = require('../models/SalesEntry');
 const Shift = require('../models/Shift');
+const { getDb, saveDatabase } = require('../database/init');
 
 const adminController = {
   // Dashboard Stats
@@ -164,6 +165,22 @@ const adminController = {
     }));
 
     res.json({ entries: enriched });
+  },
+
+  // Delete Entry
+  deleteEntry: (req, res) => {
+    const { id } = req.params;
+    const db = getDb();
+
+    const result = db.exec('SELECT * FROM sales_entries WHERE id = ?', [id]);
+    if (result.length === 0 || result[0].values.length === 0) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+
+    db.run('DELETE FROM sales_entries WHERE id = ?', [id]);
+    saveDatabase();
+
+    res.json({ message: 'Entry deleted successfully' });
   },
 
   // CSV Export

@@ -11,6 +11,7 @@ export default function AdminEntries() {
   const [loading, setLoading] = useState(true);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const fetchEntries = async () => {
     setLoading(true);
@@ -29,19 +30,29 @@ export default function AdminEntries() {
 
   useEffect(() => { fetchEntries(); }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/admin/entries/${id}`);
+      setDeleteConfirm(null);
+      fetchEntries();
+    } catch (err) {
+      console.error('Failed to delete entry');
+    }
+  };
+
   const handleExport = () => {
     const token = localStorage.getItem('token');
     const params = new URLSearchParams();
     if (dateFrom) params.append('date_from', dateFrom);
     if (dateTo) params.append('date_to', dateTo);
-    window.open(`http://localhost:5000/api/admin/export/csv?${params.toString()}`, '_blank');
+    window.open(`https://wifi-sales-api.onrender.com/api/admin/export/csv?${params.toString()}`, '_blank');
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
         <div className="px-4 py-3 flex items-center justify-between">
-          <h1 className="text-lg font-bold">WiFi Sales</h1>
+          <h1 className="text-lg font-bold">BEN WIFISPOT</h1>
           <div className="flex items-center gap-2">
             <button onClick={toggleLanguage} className="text-xs bg-blue-800 hover:bg-blue-900 px-2 py-1 rounded">
               {language === 'en' ? '🇺🇬 LG' : '🇬🇧 EN'}
@@ -88,7 +99,7 @@ export default function AdminEntries() {
                     <th className="text-left px-4 py-3 font-medium text-gray-600">Gross</th>
                     <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Expenses</th>
                     <th className="text-left px-4 py-3 font-medium text-gray-600">Net</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Combined</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -101,7 +112,9 @@ export default function AdminEntries() {
                       <td className="px-4 py-3">UGX {entry.total_sales?.toLocaleString()}</td>
                       <td className="px-4 py-3 hidden md:table-cell text-red-600">UGX {entry.expenses?.toLocaleString()}</td>
                       <td className="px-4 py-3 text-green-600">UGX {entry.net?.toLocaleString()}</td>
-                      <td className="px-4 py-3 hidden md:table-cell">{entry.missed_shift_ids ? 'Yes' : 'No'}</td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => setDeleteConfirm(entry.id)} className="text-red-600 hover:text-red-800 text-xs">Delete</button>
+                      </td>
                     </tr>
                   ))}
                   {entries.length === 0 && (
@@ -114,6 +127,22 @@ export default function AdminEntries() {
         </main>
       </div>
 
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl w-full max-w-sm p-6 text-center">
+            <div className="text-red-500 text-4xl mb-3">⚠️</div>
+            <p className="font-semibold text-gray-800 mb-2">Delete Entry?</p>
+            <p className="text-sm text-gray-500 mb-4">This action cannot be undone. The sales entry will be permanently removed.</p>
+            <div className="flex gap-3">
+              <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 bg-red-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-red-700">Delete</button>
+              <button onClick={() => setDeleteConfirm(null)} className="flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-300">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Nav */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40">
         <div className="flex justify-around">
           <NavLink to="/admin" end className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Dashboard</NavLink>
