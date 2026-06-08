@@ -61,13 +61,33 @@ export default function AdminEntries() {
     }
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
+  try {
+    const token = localStorage.getItem('token');
     const params = new URLSearchParams();
     if (dateFrom) params.append('date_from', dateFrom);
     if (dateTo) params.append('date_to', dateTo);
     if (filterAgent) params.append('agent_id', filterAgent);
-    window.open(`https://wifi-sales-api.onrender.com/api/admin/export/csv?${params.toString()}`, '_blank');
-  };
+
+    const response = await fetch(`https://wifi-sales-api.onrender.com/api/admin/export/csv?${params.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sales-export-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error('Export failed');
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
