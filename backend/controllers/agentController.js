@@ -1,5 +1,6 @@
 const Shift = require('../models/Shift');
 const SalesEntry = require('../models/SalesEntry');
+const { getDb } = require('../database/init');
 
 const agentController = {
   getTodayShifts: (req, res) => {
@@ -52,7 +53,6 @@ const agentController = {
       };
     });
 
-    // Calculate today's total and target
     const todayTotal = todayEntries.reduce((sum, e) => sum + e.total_sales, 0);
     const target = agent.daily_target || 0;
     const percentage = target > 0 ? Math.min(Math.round((todayTotal / target) * 100), 100) : 0;
@@ -77,6 +77,31 @@ const agentController = {
       commission_rate: agent.commission_rate || 0,
       commission,
       month_year: monthYear
+    });
+  },
+
+  // Lifetime Totals (Permanent - Never Resets)
+  getTotals: (req, res) => {
+    const db = getDb();
+    const agent = req.user;
+
+    const result = db.exec(
+      `SELECT 
+        COALESCE(SUM(total_sales), 0) as total_gross,
+        COALESCE(SUM(expenses), 0) as total_expenses,
+        COALESCE(SUM(net), 0) as total_net,
+        COUNT(*) as total_entries
+      FROM sales_entries WHERE agent_id = ?`,
+      [agent.id]
+    );
+
+    const vals = result[0].values[0];
+
+    res.json({
+      total_gross: vals[0],
+      total_expenses: vals[1],
+      total_net: vals[2],
+      total_entries: vals[3]
     });
   }
 };

@@ -12,6 +12,9 @@ export default function AdminEntries() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [totals, setTotals] = useState({ total_gross: 0, total_expenses: 0, total_net: 0, total_entries: 0 });
+  const [filterAgent, setFilterAgent] = useState('');
+  const [agents, setAgents] = useState([]);
 
   const fetchEntries = async () => {
     setLoading(true);
@@ -19,6 +22,7 @@ export default function AdminEntries() {
       const params = {};
       if (dateFrom) params.date_from = dateFrom;
       if (dateTo) params.date_to = dateTo;
+      if (filterAgent) params.agent_id = filterAgent;
       const data = await api.get('/admin/entries', { params });
       setEntries(data.data.entries);
     } catch (err) {
@@ -28,7 +32,24 @@ export default function AdminEntries() {
     }
   };
 
-  useEffect(() => { fetchEntries(); }, []);
+  const fetchTotals = async () => {
+    try {
+      const params = {};
+      if (filterAgent) params.agent_id = filterAgent;
+      const data = await api.get('/admin/totals', { params });
+      setTotals(data.data);
+    } catch (err) {}
+  };
+
+  const fetchAgents = async () => {
+    try {
+      const data = await api.get('/admin/agents');
+      setAgents(data.data.agents);
+    } catch (err) {}
+  };
+
+  useEffect(() => { fetchEntries(); fetchAgents(); }, []);
+  useEffect(() => { fetchTotals(); }, [filterAgent, entries]);
 
   const handleDelete = async (id) => {
     try {
@@ -41,10 +62,10 @@ export default function AdminEntries() {
   };
 
   const handleExport = () => {
-    const token = localStorage.getItem('token');
     const params = new URLSearchParams();
     if (dateFrom) params.append('date_from', dateFrom);
     if (dateTo) params.append('date_to', dateTo);
+    if (filterAgent) params.append('agent_id', filterAgent);
     window.open(`https://wifi-sales-api.onrender.com/api/admin/export/csv?${params.toString()}`, '_blank');
   };
 
@@ -68,7 +89,7 @@ export default function AdminEntries() {
             <NavLink to="/admin" end className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Dashboard</NavLink>
             <NavLink to="/admin/agents" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Agents</NavLink>
             <NavLink to="/admin/entries" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Sales Entries</NavLink>
-            <NavLink to="/profile" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Profile</NavLink>
+            <NavLink to="/profile" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>My Profile</NavLink>
           </nav>
         </div>
 
@@ -80,7 +101,35 @@ export default function AdminEntries() {
             </button>
           </div>
 
-          <div className="flex gap-2 mb-4">
+          {/* Lifetime Totals */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+            <div className="bg-white rounded-xl shadow-sm border p-3">
+              <p className="text-xs text-gray-500">Total Gross (All Time)</p>
+              <p className="text-lg font-bold text-green-600">UGX {totals.total_gross?.toLocaleString()}</p>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border p-3">
+              <p className="text-xs text-gray-500">Total Spent (All Time)</p>
+              <p className="text-lg font-bold text-red-600">UGX {totals.total_expenses?.toLocaleString()}</p>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border p-3">
+              <p className="text-xs text-gray-500">Total Net (All Time)</p>
+              <p className="text-lg font-bold text-blue-600">UGX {totals.total_net?.toLocaleString()}</p>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border p-3">
+              <p className="text-xs text-gray-500">Total Entries</p>
+              <p className="text-lg font-bold">{totals.total_entries}</p>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="flex gap-2 mb-4 flex-wrap">
+            <select value={filterAgent} onChange={e => { setFilterAgent(e.target.value); fetchEntries(); }}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+              <option value="">All Agents</option>
+              {agents.map(a => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+            </select>
             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
             <button onClick={fetchEntries} className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800">Filter</button>
@@ -93,33 +142,35 @@ export default function AdminEntries() {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b">
                   <tr>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Agent</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Location</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Shift</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Date</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Gross</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600 hidden md:table-cell">Expenses</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Net</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Actions</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600">Agent</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600 hidden md:table-cell">Location</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600">Shift</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600">Date</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600">Gross</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600 hidden md:table-cell">Spent</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600">Net</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600 hidden md:table-cell">Reason</th>
+                    <th className="text-left px-3 py-3 font-medium text-gray-600">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {entries.map(entry => (
                     <tr key={entry.id} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3">{entry.agent_name}</td>
-                      <td className="px-4 py-3 hidden md:table-cell text-gray-500">{entry.agent_location || '-'}</td>
-                      <td className="px-4 py-3">{entry.shift_name}</td>
-                      <td className="px-4 py-3 text-gray-500">{entry.entry_date}</td>
-                      <td className="px-4 py-3">UGX {entry.total_sales?.toLocaleString()}</td>
-                      <td className="px-4 py-3 hidden md:table-cell text-red-600">UGX {entry.expenses?.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-green-600">UGX {entry.net?.toLocaleString()}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-3 py-3">{entry.agent_name}</td>
+                      <td className="px-3 py-3 hidden md:table-cell text-gray-500">{entry.agent_location || '-'}</td>
+                      <td className="px-3 py-3">{entry.shift_name}</td>
+                      <td className="px-3 py-3 text-gray-500">{entry.entry_date}</td>
+                      <td className="px-3 py-3">UGX {entry.total_sales?.toLocaleString()}</td>
+                      <td className="px-3 py-3 hidden md:table-cell text-red-600">UGX {entry.expenses?.toLocaleString()}</td>
+                      <td className="px-3 py-3 text-green-600">UGX {entry.net?.toLocaleString()}</td>
+                      <td className="px-3 py-3 hidden md:table-cell text-gray-500 text-xs max-w-[120px] truncate">{entry.expense_reason || '-'}</td>
+                      <td className="px-3 py-3">
                         <button onClick={() => setDeleteConfirm(entry.id)} className="text-red-600 hover:text-red-800 text-xs">Delete</button>
                       </td>
                     </tr>
                   ))}
                   {entries.length === 0 && (
-                    <tr><td colSpan="8" className="text-center py-8 text-gray-500">No entries found</td></tr>
+                    <tr><td colSpan="9" className="text-center py-8 text-gray-500">No entries found</td></tr>
                   )}
                 </tbody>
               </table>
@@ -128,13 +179,13 @@ export default function AdminEntries() {
         </main>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl w-full max-w-sm p-6 text-center">
             <div className="text-red-500 text-4xl mb-3">⚠️</div>
             <p className="font-semibold text-gray-800 mb-2">Delete Entry?</p>
-            <p className="text-sm text-gray-500 mb-4">This action cannot be undone. The sales entry will be permanently removed.</p>
+            <p className="text-sm text-gray-500 mb-4">This action cannot be undone.</p>
             <div className="flex gap-3">
               <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 bg-red-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-red-700">Delete</button>
               <button onClick={() => setDeleteConfirm(null)} className="flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-300">Cancel</button>
@@ -149,7 +200,10 @@ export default function AdminEntries() {
           <NavLink to="/admin" end className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Dashboard</NavLink>
           <NavLink to="/admin/agents" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Agents</NavLink>
           <NavLink to="/admin/entries" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Entries</NavLink>
-          <NavLink to="/profile" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Profile</NavLink>
+          <NavLink to="/profile" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            Profile
+          </NavLink>
         </div>
       </div>
     </div>

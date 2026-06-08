@@ -28,6 +28,37 @@ const adminController = {
     });
   },
 
+  // Running Totals (Permanent - Never Resets)
+  totals: (req, res) => {
+    const { agent_id } = req.query;
+    const db = getDb();
+
+    let query = `SELECT 
+      COALESCE(SUM(total_sales), 0) as total_gross,
+      COALESCE(SUM(expenses), 0) as total_expenses,
+      COALESCE(SUM(net), 0) as total_net,
+      COUNT(*) as total_entries
+    FROM sales_entries`;
+    
+    const params = [];
+
+    if (agent_id) {
+      query += ' WHERE agent_id = ?';
+      params.push(agent_id);
+    }
+
+    const result = db.exec(query, params);
+    const vals = result[0].values[0];
+
+    res.json({
+      total_gross: vals[0],
+      total_expenses: vals[1],
+      total_net: vals[2],
+      total_entries: vals[3],
+      agent_id: agent_id || null
+    });
+  },
+
   // Agent Management
   listAgents: (req, res) => {
     const agents = User.getAllAgents();
@@ -148,7 +179,6 @@ const adminController = {
     const { date_from, date_to, agent_id, shift_id } = req.query;
     const entries = SalesEntry.getAll({ dateFrom: date_from, dateTo: date_to, agent_id, shift_id });
 
-    const shifts = Shift.getAll();
     const enriched = entries.map(entry => ({
       id: entry.id,
       agent_name: entry.agent_name,

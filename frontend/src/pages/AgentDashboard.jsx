@@ -5,10 +5,10 @@ import ShiftCard from '../components/ShiftCard';
 import SubmitModal from '../components/SubmitModal';
 import InstallPrompt from '../components/InstallPrompt';
 import OfflineBanner from '../components/OfflineBanner';
+import Footer from '../components/Footer';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import Footer from '../components/Footer';
 
 export default function AgentDashboard() {
   const { t } = useLanguage();
@@ -22,6 +22,7 @@ export default function AgentDashboard() {
   const [showSubmit, setShowSubmit] = useState(false);
   const [activeShiftId, setActiveShiftId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [totals, setTotals] = useState({ total_gross: 0, total_expenses: 0, total_net: 0, total_entries: 0 });
 
   const fetchShifts = useCallback(async () => {
     try {
@@ -52,6 +53,16 @@ export default function AgentDashboard() {
     fetchCommission();
   }, []);
 
+  useEffect(() => {
+    const fetchTotals = async () => {
+      try {
+        const data = await api.get('/agent/totals');
+        setTotals(data.data);
+      } catch (err) {}
+    };
+    fetchTotals();
+  }, [shifts]);
+
   const handleOpenSubmit = (shiftId) => {
     setActiveShiftId(shiftId);
     setShowSubmit(true);
@@ -78,6 +89,26 @@ export default function AgentDashboard() {
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-800">{t('hello')}, {user?.name} 👋</h2>
           <p className="text-gray-500 text-sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</p>
+        </div>
+
+        {/* Lifetime Earnings */}
+        <div className="bg-white rounded-xl shadow-sm border p-3 mb-4">
+          <h3 className="font-semibold text-gray-800 text-sm mb-2">Lifetime Earnings</h3>
+          <div className="grid grid-cols-3 gap-2 text-xs">
+            <div>
+              <p className="text-gray-500">Total Gross</p>
+              <p className="font-bold text-green-600">UGX {totals.total_gross?.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Total Spent</p>
+              <p className="font-bold text-red-600">UGX {totals.total_expenses?.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Total Net</p>
+              <p className="font-bold text-blue-600">UGX {totals.total_net?.toLocaleString()}</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">{totals.total_entries} total entries</p>
         </div>
 
         {/* Commission Card */}
@@ -120,8 +151,8 @@ export default function AgentDashboard() {
       </main>
 
       <BottomNav />
-      <Footer />
       <InstallPrompt />
+      <Footer />
 
       {showSubmit && (
         <SubmitModal

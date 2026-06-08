@@ -6,5 +6,6 @@ const agentController = require('../controllers/agentController');
 
 router.get('/shifts/today', auth, role('agent'), agentController.getTodayShifts);
 router.get('/commission', auth, role('agent'), agentController.getCommission);
+router.get('/totals', auth, role('agent'), agentController.getTotals);
 
 module.exports = router;
