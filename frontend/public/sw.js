@@ -1,6 +1,5 @@
 const CACHE_NAME = 'wifi-sales-v1';
 const ASSETS = [
-  '/',
   '/login',
   '/dashboard',
   '/history',
