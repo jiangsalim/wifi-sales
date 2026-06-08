@@ -1,31 +1,35 @@
-const CACHE_NAME = 'wifi-sales-v1';
-const ASSETS = [
-  '/login',
-  '/dashboard',
-  '/history',
-  '/admin',
-];
+const CACHE_NAME = 'wifi-sales-v2';
 
+// Don't cache anything on install — let the browser handle it
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
-  );
+  self.skipWaiting();
 });
 
+// Network-first strategy: always try network first, fall back to cache
 self.addEventListener('fetch', (event) => {
+  // Skip API calls
   if (event.request.url.includes('/api/')) {
-    return fetch(event.request);
+    return;
   }
 
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful responses
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
+        });
+        return response;
+      })
+      .catch(() => {
+        // If network fails, try cache
+        return caches.match(event.request);
+      })
   );
 });
 
+// Clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
