@@ -8,6 +8,7 @@ export default function InstallPrompt() {
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      window.deferredPrompt = e;
 
       const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
       const dismissedAt = localStorage.getItem('installPromptDismissed');

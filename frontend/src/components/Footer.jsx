@@ -9,6 +9,20 @@ export default function Footer() {
           <Link to="/privacy" className="hover:text-blue-600">Privacy Policy</Link>
           <Link to="/contact" className="hover:text-blue-600">Contact</Link>
         </div>
+        <div className="text-center mb-3">
+          <button
+            onClick={() => {
+              if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+              } else {
+                alert('App is already installed or not available. Open this page in Chrome on your phone and tap "Add to Home Screen" from the menu.');
+              }
+            }}
+            className="text-xs text-blue-600 hover:text-blue-800 underline"
+          >
+            📱 Download App
+          </button>
+        </div>
         <p className="text-center text-xs text-gray-400">
           &copy; {new Date().getFullYear()} TABBU BUSINESS. All rights reserved.
         </p>
