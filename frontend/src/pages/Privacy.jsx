@@ -12,19 +12,19 @@ export default function Privacy() {
           <p><strong>Last updated:</strong> June 2026</p>
 
           <h3 className="font-semibold text-gray-800">1. Information We Collect</h3>
-          <p>We collect: agent names, email addresses, assigned locations, daily sales figures, expenses, and shift submission times.</p>
+          <p>We collect: user names, email addresses, assigned locations, daily sales figures, expenses, and shift submission times.</p>
 
           <h3 className="font-semibold text-gray-800">2. How We Use Your Data</h3>
-          <p>Your data is used exclusively for sales tracking, performance reporting, and commission calculation within the BEN WIFISPOT network.</p>
+          <p>Your data is used exclusively for business management, sales tracking, performance reporting, and commission calculation within the TABBU BUSINESS platform.</p>
 
           <h3 className="font-semibold text-gray-800">3. Data Storage</h3>
-          <p>All data is stored securely in an SQLite database hosted on Render. Access is restricted to authorized administrators only.</p>
+          <p>All data is stored securely in a database hosted on Render. Access is restricted to authorized administrators only.</p>
 
           <h3 className="font-semibold text-gray-800">4. Data Retention</h3>
-          <p>Sales entries are stored permanently for audit and reporting purposes. They cannot be deleted once submitted.</p>
+          <p>Sales entries are stored permanently for audit and reporting purposes. Once submitted, they cannot be modified.</p>
 
           <h3 className="font-semibold text-gray-800">5. Data Sharing</h3>
-          <p>We do not share, sell, or distribute your data to third parties. Data is only visible to the agent and authorized administrators.</p>
+          <p>We do not share, sell, or distribute your data to third parties. Data is only visible to the user and authorized administrators.</p>
 
           <h3 className="font-semibold text-gray-800">6. Security</h3>
           <p>We use industry-standard encryption (HTTPS) and JWT authentication to protect your data.</p>

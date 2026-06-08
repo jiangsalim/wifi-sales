@@ -9,7 +9,7 @@ export default function Navbar() {
     <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
       <div className="px-4 py-3 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold">WiFi Sales</h1>
+          <h1 className="text-lg font-bold">TABBU BUSINESS</h1>
           <p className="text-xs text-blue-200">{user?.location || 'Agent'}</p>
         </div>
         <div className="flex items-center gap-2">

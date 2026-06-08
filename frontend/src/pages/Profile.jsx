@@ -67,7 +67,7 @@ export default function Profile() {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
         <div className="px-4 py-3 flex items-center justify-between">
-          <h1 className="text-lg font-bold">BEN WIFISPOT</h1>
+          <h1 className="text-lg font-bold">TABBU BUSINESS</h1>
           <div className="flex items-center gap-2">
             <span className="text-sm hidden sm:block">{user?.name}</span>
             <button onClick={logout} className="text-sm bg-blue-800 hover:bg-blue-900 px-3 py-1 rounded">Sign Out</button>

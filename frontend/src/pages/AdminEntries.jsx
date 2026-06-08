@@ -73,7 +73,7 @@ export default function AdminEntries() {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
         <div className="px-4 py-3 flex items-center justify-between">
-          <h1 className="text-lg font-bold">BEN WIFISPOT</h1>
+          <h1 className="text-lg font-bold">TABBU BUSINESS</h1>
           <div className="flex items-center gap-2">
             <button onClick={toggleLanguage} className="text-xs bg-blue-800 hover:bg-blue-900 px-2 py-1 rounded">
               {language === 'en' ? '🇺🇬 LG' : '🇬🇧 EN'}

@@ -10,7 +10,7 @@ export default function Footer() {
           <Link to="/contact" className="hover:text-blue-600">Contact</Link>
         </div>
         <p className="text-center text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} BEN WIFISPOT. All rights reserved.
+          &copy; {new Date().getFullYear()} TABBU BUSINESS. All rights reserved.
         </p>
         <p className="text-center text-xs text-gray-400 mt-1">
           Built by{' '}

@@ -43,8 +43,8 @@ export default function Login() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">BEN WIFISPOT</h1>
-            <p className="text-gray-500 text-sm mt-1">Sign in to your account</p>
+            <h1 className="text-2xl font-bold text-gray-800">TABBU BUSINESS</h1>
+            <p className="text-gray-500 text-sm mt-1">Management Platform</p>
           </div>
 
           {/* Form */}

@@ -9,8 +9,8 @@ export default function Contact() {
       </div>
       <main className="max-w-2xl mx-auto p-6">
         <div className="bg-white rounded-xl shadow-sm border p-6 text-sm text-gray-700 space-y-4 text-center">
-          <h3 className="font-semibold text-gray-800 text-lg">BEN WIFISPOT</h3>
-          <p>WiFi Hotspot Sales Management System</p>
+          <h3 className="font-semibold text-gray-800 text-lg">TABBU BUSINESS</h3>
+          <p>Business Management Platform</p>
           <div className="space-y-2">
             <p><strong>Email:</strong> jaingsalim@gmail.com</p>
             <p><strong>Developer:</strong> jiangsalim</p>

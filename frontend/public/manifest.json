@@ -1,11 +1,11 @@
 {
-  "name": "WiFi Sales",
-  "short_name": "WiFiSales",
+  "name": "TABBU BUSINESS",
+  "short_name": "TABBU",
   "start_url": "/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a56db",
-  "description": "WiFi hotspot sales tracking for agents",
+  "description": "Business Management Platform",
   "icons": [
     {
       "src": "/icons/icon-192.png",
