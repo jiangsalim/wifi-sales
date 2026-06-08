@@ -12,12 +12,14 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
 import Profile from './pages/Profile';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <LanguageProvider>
+          <Toaster />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/terms" element={<Terms />} />

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import Footer from '../components/Footer';
+import toast from 'react-hot-toast';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,11 +21,27 @@ export default function Login() {
 
     try {
       const user = await login(email, password);
-      if (user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
+      
+      // Show welcome toast
+      toast.success(`Welcome to TABBU BUSINESS, ${user.name}! 🎉`, {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#1a56db',
+          color: '#fff',
+          fontWeight: 'bold',
+          padding: '16px',
+        },
+      });
+
+      // Short delay before redirect for toast to show
+      setTimeout(() => {
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      }, 500);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     } finally {
