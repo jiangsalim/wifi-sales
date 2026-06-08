@@ -8,7 +8,6 @@ async function initDatabase() {
   const SQL = await initSqlJs();
   const dbPath = path.resolve(__dirname, '..', process.env.DB_PATH || './database/wifi-sales.db');
 
-  // Load existing or create new
   if (fs.existsSync(dbPath)) {
     const buffer = fs.readFileSync(dbPath);
     db = new SQL.Database(buffer);
@@ -16,7 +15,6 @@ async function initDatabase() {
     db = new SQL.Database();
   }
 
-  // Create tables
   db.run(`
     CREATE TABLE IF NOT EXISTS shifts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +38,7 @@ async function initDatabase() {
       daily_target INTEGER DEFAULT 0,
       commission_rate INTEGER DEFAULT 0,
       language TEXT DEFAULT 'en',
+      avatar TEXT,
       device_token TEXT,
       is_active INTEGER DEFAULT 1,
       created_at TEXT DEFAULT (datetime('now')),

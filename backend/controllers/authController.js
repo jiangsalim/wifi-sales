@@ -30,7 +30,8 @@ const authController = {
         location: user.location,
         language: user.language,
         daily_target: user.daily_target,
-        commission_rate: user.commission_rate
+        commission_rate: user.commission_rate,
+        avatar: user.avatar
       }
     });
   },
@@ -46,7 +47,8 @@ const authController = {
         location: user.location,
         language: user.language,
         daily_target: user.daily_target,
-        commission_rate: user.commission_rate
+        commission_rate: user.commission_rate,
+        avatar: user.avatar
       }
     });
   },
@@ -63,9 +65,20 @@ const authController = {
         location: updated.location,
         language: updated.language,
         daily_target: updated.daily_target,
-        commission_rate: updated.commission_rate
+        commission_rate: updated.commission_rate,
+        avatar: updated.avatar
       }
     });
+  },
+
+  updateAvatar: (req, res) => {
+    const { avatar } = req.body;
+    if (!avatar) {
+      return res.status(400).json({ message: 'Avatar data is required' });
+    }
+
+    User.update(req.user.id, { avatar });
+    res.json({ message: 'Avatar updated', avatar });
   }
 };
 

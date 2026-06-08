@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import AvatarUpload from '../components/AvatarUpload';
 
 export default function Profile() {
   const { user, logout, updateUser } = useAuth();
@@ -79,7 +80,7 @@ export default function Profile() {
         <div className="hidden md:block w-64 bg-white border-r min-h-[calc(100vh-57px)] p-4">
           <nav className="space-y-1">
             <NavLink to="/admin" end className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Dashboard</NavLink>
-            <NavLink to="/admin/agents" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Agents</NavLink>
+            <NavLink to="/admin/agents" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Users</NavLink>
             <NavLink to="/admin/entries" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Sales Entries</NavLink>
             <NavLink to="/profile" className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>My Profile</NavLink>
           </nav>
@@ -90,6 +91,24 @@ export default function Profile() {
 
           {message && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">{message}</div>}
           {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
+
+          {/* Avatar */}
+          <div className="bg-white rounded-xl shadow-sm border p-6 max-w-md mb-6 text-center">
+            <AvatarUpload
+              currentAvatar={user?.avatar}
+              onSave={async (avatarData) => {
+                try {
+                  await api.put('/auth/avatar', { avatar: avatarData });
+                  updateUser({ ...user, avatar: avatarData });
+                  setMessage('Profile picture updated');
+                } catch (err) {
+                  setError('Failed to update profile picture');
+                }
+              }}
+            />
+            <p className="text-sm text-gray-500 mt-2">{user?.name}</p>
+            <p className="text-xs text-gray-400">{user?.role === 'admin' ? 'Administrator' : 'Agent'}</p>
+          </div>
 
           {/* Edit Name & Email */}
           <div className="bg-white rounded-xl shadow-sm border p-6 max-w-md mb-6">
@@ -139,7 +158,7 @@ export default function Profile() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40">
         <div className="flex justify-around">
           <NavLink to="/admin" end className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Dashboard</NavLink>
-          <NavLink to="/admin/agents" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Agents</NavLink>
+          <NavLink to="/admin/agents" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Users</NavLink>
           <NavLink to="/admin/entries" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>Entries</NavLink>
           <NavLink to="/profile" className={({ isActive }) => `flex flex-col items-center py-2 px-3 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>

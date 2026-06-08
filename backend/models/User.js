@@ -26,7 +26,7 @@ const User = {
 
   getAllAgents: () => {
     const db = getDb();
-    const result = db.exec("SELECT * FROM users WHERE role = 'agent' ORDER BY name");
+    const result = db.exec("SELECT * FROM users WHERE role IN ('agent', 'admin') ORDER BY name");
     if (result.length === 0) return [];
     return result[0].values.map(vals => {
       const user = {};
@@ -39,8 +39,8 @@ const User = {
     const db = getDb();
     const hashedPassword = bcrypt.hashSync(data.password, 10);
     db.run(
-      'INSERT INTO users (name, email, password, role, location, daily_target, commission_rate, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [data.name, data.email, hashedPassword, data.role || 'agent', data.location || null, data.daily_target || 0, data.commission_rate || 0, data.language || 'en']
+      'INSERT INTO users (name, email, password, role, location, daily_target, commission_rate, language, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [data.name, data.email, hashedPassword, data.role || 'agent', data.location || null, data.daily_target || 0, data.commission_rate || 0, data.language || 'en', data.avatar || null]
     );
     saveDatabase();
     return User.findByEmail(data.email);
@@ -57,6 +57,8 @@ const User = {
     if (data.commission_rate !== undefined) { fields.push('commission_rate = ?'); values.push(data.commission_rate); }
     if (data.language !== undefined) { fields.push('language = ?'); values.push(data.language); }
     if (data.is_active !== undefined) { fields.push('is_active = ?'); values.push(data.is_active); }
+    if (data.role !== undefined) { fields.push('role = ?'); values.push(data.role); }
+    if (data.avatar !== undefined) { fields.push('avatar = ?'); values.push(data.avatar); }
     if (data.password) {
       fields.push('password = ?');
       values.push(bcrypt.hashSync(data.password, 10));
