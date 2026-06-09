@@ -7,7 +7,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
-      <div className="px-4 py-3 flex items-center justify-between">
+      <div className="px-4 py-3 flex items-center justify-between container-site">
         <div className="flex items-center gap-2">
           {user?.avatar ? (
             <img src={user.avatar} alt="" className="w-8 h-8 rounded-full border-2 border-blue-300 object-cover" />

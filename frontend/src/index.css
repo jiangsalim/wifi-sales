@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+/* Custom container */
+.container-site {
+  @apply mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8;
+}
+
+/* Touch-friendly improvements */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Safe area padding for PWA */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+html {
+  scroll-behavior: smooth;
+}

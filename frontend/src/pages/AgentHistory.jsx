@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import BottomNav from '../components/BottomNav';
+import Footer from '../components/Footer';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../services/api';
 
@@ -43,39 +44,26 @@ export default function AgentHistory() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <main className="p-4 pb-20">
+      <main className="p-4 pb-20 container-site">
         <h2 className="text-xl font-bold text-gray-800 mb-4">{t('history')}</h2>
 
-        {/* Filters */}
         <div className="flex gap-2 mb-4">
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
-          />
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
-          />
-          <button
-            onClick={handleFilter}
-            className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800"
-          >
+          <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+          <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+          <button onClick={handleFilter}
+            className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800">
             Filter
           </button>
         </div>
 
-        {/* Loading */}
         {loading && (
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700"></div>
           </div>
         )}
 
-        {/* No entries */}
         {!loading && entries.length === 0 && (
           <div className="text-center text-gray-500 py-8">
             <p className="text-lg mb-1">{t('no_entries')}</p>
@@ -83,7 +71,6 @@ export default function AgentHistory() {
           </div>
         )}
 
-        {/* Entries List */}
         {!loading && entries.length > 0 && (
           <>
             <div className="space-y-2">
@@ -114,26 +101,13 @@ export default function AgentHistory() {
               ))}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center gap-2 mt-4">
-                <button
-                  onClick={() => fetchEntries(page - 1)}
-                  disabled={page <= 1}
-                  className="px-3 py-1 bg-white border rounded text-sm disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span className="px-3 py-1 text-sm text-gray-600">
-                  Page {page} of {totalPages}
-                </span>
-                <button
-                  onClick={() => fetchEntries(page + 1)}
-                  disabled={page >= totalPages}
-                  className="px-3 py-1 bg-white border rounded text-sm disabled:opacity-50"
-                >
-                  Next
-                </button>
+                <button onClick={() => fetchEntries(page - 1)} disabled={page <= 1}
+                  className="px-3 py-1 bg-white border rounded text-sm disabled:opacity-50">Previous</button>
+                <span className="px-3 py-1 text-sm text-gray-600">Page {page} of {totalPages}</span>
+                <button onClick={() => fetchEntries(page + 1)} disabled={page >= totalPages}
+                  className="px-3 py-1 bg-white border rounded text-sm disabled:opacity-50">Next</button>
               </div>
             )}
           </>
@@ -141,6 +115,7 @@ export default function AgentHistory() {
       </main>
 
       <BottomNav />
+      <Footer />
     </div>
   );
 }

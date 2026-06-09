@@ -85,7 +85,7 @@ export default function AgentDashboard() {
       <Navbar />
       <OfflineBanner />
 
-      <main className="p-4 pb-20">
+      <main className="p-4 pb-20 container-site">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-800">{t('hello')}, {user?.name} 👋</h2>
           <p className="text-gray-500 text-sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</p>

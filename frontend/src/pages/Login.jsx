@@ -22,7 +22,6 @@ export default function Login() {
     try {
       const user = await login(email, password);
       
-      // Show welcome toast
       toast.success(`Welcome to TABBU BUSINESS, ${user.name}! 🎉`, {
         duration: 3000,
         position: 'top-center',
@@ -34,7 +33,6 @@ export default function Login() {
         },
       });
 
-      // Short delay before redirect for toast to show
       setTimeout(() => {
         if (user.role === 'admin') {
           navigate('/admin');
@@ -53,7 +51,6 @@ export default function Login() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
-          {/* Logo / Header */}
           <div className="text-center mb-8">
             <div className="bg-blue-700 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +61,6 @@ export default function Login() {
             <p className="text-gray-500 text-sm mt-1">Management Platform</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">

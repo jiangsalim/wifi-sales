@@ -67,7 +67,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
-        <div className="px-4 py-3 flex items-center justify-between">
+        <div className="px-4 py-3 flex items-center justify-between container-site">
           <h1 className="text-lg font-bold">TABBU BUSINESS</h1>
           <div className="flex items-center gap-2">
             <span className="text-sm hidden sm:block">{user?.name}</span>
@@ -86,7 +86,7 @@ export default function Profile() {
           </nav>
         </div>
 
-        <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
+        <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6 container-site">
           <h2 className="text-xl font-bold text-gray-800 mb-4">My Profile</h2>
 
           {message && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">{message}</div>}
