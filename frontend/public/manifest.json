@@ -1,11 +1,11 @@
 {
-  "name": "TABBU BUSINESS",
-  "short_name": "TABBU",
+  "name": "BEN WIFISPOT",
+  "short_name": "WiFiSales",
   "start_url": "/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a56db",
-  "description": "Business Management Platform",
+  "description": "WiFi Hotspot Sales Tracking",
   "icons": [
     {
       "src": "/icons/icon-192.png",

@@ -24,7 +24,7 @@ export default function Footer() {
           </button>
         </div>
         <p className="text-center text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} TABBU BUSINESS. All rights reserved.
+          &copy; {new Date().getFullYear()} BEN WIFISPOT. All rights reserved.
         </p>
         <p className="text-center text-xs text-gray-400 mt-1">
           Built by{' '}

@@ -46,10 +46,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Bar */}
       <nav className="bg-blue-700 text-white shadow-lg sticky top-0 z-40">
         <div className="px-3 sm:px-4 py-3 flex items-center justify-between container-site">
-          <h1 className="text-base sm:text-lg font-bold">TABBU BUSINESS</h1>
+          <h1 className="text-base sm:text-lg font-bold">BEN WIFISPOT</h1>
           <div className="flex items-center gap-1 sm:gap-2">
             <span className="text-xs sm:text-sm hidden sm:block">{user?.name}</span>
             <button onClick={toggleLanguage} className="text-xs bg-blue-800 hover:bg-blue-900 px-1.5 sm:px-2 py-1 rounded">
@@ -60,7 +59,6 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      {/* Mobile Sub Navigation */}
       <div className="md:hidden bg-white border-b overflow-x-auto">
         <div className="flex px-2 py-2 gap-1">
           <NavLink to="/admin" end className={({ isActive }) => `whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium ${isActive ? 'bg-blue-100 text-blue-700' : 'text-gray-500'}`}>Dashboard</NavLink>
@@ -71,7 +69,6 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex">
-        {/* Desktop Sidebar */}
         <div className="hidden md:block w-56 lg:w-64 bg-white border-r min-h-[calc(100vh-57px)] p-3 lg:p-4 shrink-0">
           <nav className="space-y-1">
             <NavLink to="/admin" end className={({ isActive }) => `block px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>Dashboard</NavLink>
@@ -81,12 +78,10 @@ export default function AdminDashboard() {
           </nav>
         </div>
 
-        {/* Main Content */}
         <main className="flex-1 p-3 sm:p-4 md:p-6 pb-20 md:pb-6 min-w-0">
           <div className="container-site">
             <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Dashboard</h2>
 
-            {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
               <div className="bg-white rounded-xl shadow-sm border p-3 sm:p-4">
                 <p className="text-xs text-gray-500">Today Gross</p>
@@ -109,7 +104,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Chart */}
             <div className="bg-white rounded-xl shadow-sm border p-3 sm:p-4 mb-4 sm:mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                 <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Daily Sales</h3>
@@ -132,7 +126,6 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            {/* Agent Comparison */}
             <div className="bg-white rounded-xl shadow-sm border p-3 sm:p-4">
               <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-4">Agent Comparison</h3>
               {agentComparison.length > 0 ? (
@@ -153,7 +146,6 @@ export default function AdminDashboard() {
         </main>
       </div>
 
-      {/* Mobile Bottom Nav */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40">
         <div className="flex justify-around">
           <NavLink to="/admin" end className={({ isActive }) => `flex flex-col items-center py-1.5 px-2 text-xs ${isActive ? 'text-blue-700' : 'text-gray-500'}`}>

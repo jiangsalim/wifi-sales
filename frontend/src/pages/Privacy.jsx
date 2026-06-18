@@ -15,10 +15,10 @@ export default function Privacy() {
           <p>We collect: user names, email addresses, assigned locations, daily sales figures, expenses, and shift submission times.</p>
 
           <h3 className="font-semibold text-gray-800">2. How We Use Your Data</h3>
-          <p>Your data is used exclusively for business management, sales tracking, performance reporting, and commission calculation within the TABBU BUSINESS platform.</p>
+          <p>Your data is used exclusively for sales tracking, performance reporting, and commission calculation within the BEN WIFISPOT platform.</p>
 
           <h3 className="font-semibold text-gray-800">3. Data Storage</h3>
-          <p>All data is stored securely in a database hosted on Render. Access is restricted to authorized administrators only.</p>
+          <p>All data is stored securely in a database. Access is restricted to authorized administrators only.</p>
 
           <h3 className="font-semibold text-gray-800">4. Data Retention</h3>
           <p>Sales entries are stored permanently for audit and reporting purposes. Once submitted, they cannot be modified.</p>

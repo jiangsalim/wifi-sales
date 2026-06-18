@@ -12,10 +12,10 @@ export default function Terms() {
           <p><strong>Last updated:</strong> June 2026</p>
 
           <h3 className="font-semibold text-gray-800">1. Acceptance of Terms</h3>
-          <p>By accessing and using the TABBU BUSINESS Management Platform, you agree to be bound by these Terms and Conditions.</p>
+          <p>By accessing and using the BEN WIFISPOT Sales Management System, you agree to be bound by these Terms and Conditions.</p>
 
           <h3 className="font-semibold text-gray-800">2. Description of Service</h3>
-          <p>TABBU BUSINESS provides a business management and sales tracking platform. Users submit daily sales figures across three shifts. All submissions are final and cannot be edited or deleted.</p>
+          <p>BEN WIFISPOT provides a WiFi hotspot sales tracking platform. Users submit daily sales figures across three shifts. All submissions are final and cannot be edited or deleted.</p>
 
           <h3 className="font-semibold text-gray-800">3. User Responsibilities</h3>
           <p>Users are responsible for submitting accurate sales figures. Any expenses claimed must include a valid reason. Falsifying data may result in account deactivation.</p>
@@ -24,13 +24,13 @@ export default function Terms() {
           <p>Once a sales entry is submitted, it cannot be modified or deleted. This ensures transparency and accountability.</p>
 
           <h3 className="font-semibold text-gray-800">5. Privacy</h3>
-          <p>Your data is stored securely and used only for business management purposes. See our Privacy Policy for details.</p>
+          <p>Your data is stored securely and used only for sales tracking purposes. See our Privacy Policy for details.</p>
 
           <h3 className="font-semibold text-gray-800">6. Account Management</h3>
           <p>Administrators reserve the right to activate or deactivate user accounts. Inactive accounts cannot access the system.</p>
 
           <h3 className="font-semibold text-gray-800">7. Limitation of Liability</h3>
-          <p>TABBU BUSINESS is not liable for any losses resulting from inaccurate data entry or system downtime.</p>
+          <p>BEN WIFISPOT is not liable for any losses resulting from inaccurate data entry or system downtime.</p>
 
           <h3 className="font-semibold text-gray-800">8. Contact</h3>
           <p>For questions, contact: <strong>jaingsalim@gmail.com</strong></p>

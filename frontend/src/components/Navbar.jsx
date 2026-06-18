@@ -17,7 +17,7 @@ export default function Navbar() {
             </div>
           )}
           <div>
-            <h1 className="text-lg font-bold">TABBU BUSINESS</h1>
+            <h1 className="text-lg font-bold">BEN WIFISPOT</h1>
             <p className="text-xs text-blue-200">{user?.location || 'Agent'}</p>
           </div>
         </div>
